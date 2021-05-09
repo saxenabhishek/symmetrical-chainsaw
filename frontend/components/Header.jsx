@@ -1,17 +1,17 @@
 export default function Header(prop) {
   return (
     <header className="text-gray-400 bg-gray-900 body-font">
-      <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <a className="flex title-font font-medium items-center text-white mb-4 md:mb-0">
+      <div className="container mx-auto flex p-5 flex-row justify-between">
+        <a className="title-font font-medium items-center text-white mb-0">
           <span className="md:ml-3  text-xl">Ecomm</span>
         </a>
-        <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-700	flex flex-wrap items-center text-base justify-center">
+        <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-700	flex-col md:flex-row items-center hidden md:block text-base justify-self-center">
           <a className="mr-5 hover:text-white">First Link</a>
           <a className="mr-5 hover:text-white">Second Link</a>
           <a className="mr-5 hover:text-white">Third Link</a>
           <a className="mr-5 hover:text-white">Fourth Link</a>
         </nav>
-        <button className="inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:bg-gray-500 hover:text-gray-50 rounded mt-4 md:mt-0">
+        <button className="inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:bg-gray-500 hover:text-gray-50 rounded mt-0">
           Sign in
           <svg
             fill="none"
