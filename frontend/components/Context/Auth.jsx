@@ -2,13 +2,6 @@ import { createContext, useState, useEffect } from "react";
 
 export const tokencontext = createContext();
 
-const getToken = () => {
-  const tokenString = sessionStorage.getItem("token");
-  const userToken = JSON.parse(tokenString);
-  console.log(userToken);
-  return userToken;
-};
-
 export default function Tokenprovider(props) {
   const [token, setToken] = useState(null);
 
