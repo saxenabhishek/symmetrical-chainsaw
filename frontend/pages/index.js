@@ -1,7 +1,7 @@
-import Head from "next/head";
+import Link from "next/link";
 import Image from "next/image";
 
-export default function Home() {
+export default function Home(props) {
   return (
     <section className="text-gray-400 bg-gray-900 body-font h-full">
       <div className="container mx-auto flex px-5 py-24 items-center justify-center flex-col">
@@ -23,15 +23,19 @@ export default function Home() {
             sign in or sign up
           </p>
           <div className="flex-row md:inline-flex">
-            <button className="m-5 text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg">
-              Sign in
-            </button>
-            <button
-              className=" m-5 max-w-md
-             text-gray-400 bg-gray-800 border-0 py-2 px-6 focus:outline-none hover:bg-gray-700 hover:text-white rounded text-lg"
-            >
-              Sign up
-            </button>
+            <Link href="/signin">
+              <button className="m-5 text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg">
+                Sign in
+              </button>
+            </Link>
+            <Link href="/signup">
+              <button
+                className=" m-5 max-w-md
+              text-gray-400 bg-gray-800 border-0 py-2 px-6 focus:outline-none hover:bg-gray-700 hover:text-white rounded text-lg"
+              >
+                Sign up
+              </button>
+            </Link>
           </div>
         </div>
       </div>
