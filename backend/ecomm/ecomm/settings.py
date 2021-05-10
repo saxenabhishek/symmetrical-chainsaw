@@ -24,7 +24,7 @@ SECRET_KEY = 'ows-@i6zk0)l%087(j$$wzcmmz&2z&%a_yru5x#x^d*#)#k=9r'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition

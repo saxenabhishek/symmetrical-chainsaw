@@ -2,9 +2,7 @@ from django.shortcuts import redirect, resolve_url
 from django.shortcuts import HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
-from .decorators import auth_redirect
-from django.contrib.auth.decorators import login_required
-from .decorators import check_perms
+from .decorators import auth_redirect, check_perms
 
 
 @check_perms
@@ -19,9 +17,8 @@ def signup(request):
         email = request.POST['email']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
-
-        user = User.objects.create_user(username, email, password1, password2)
-        user.save()
+        if password1 == password2:
+            User.objects.create_user(username=username, password=password1, email=email)
         return redirect(resolve_url('login'))
     return HttpResponse('404 - Not Found')
 
@@ -43,7 +40,7 @@ def loginuser(request):
     return HttpResponse('404-Page Not Found')
 
 
-@login_required(login_url="login/")
+@check_perms
 def logoutuser(request):
     logout(request)
-    return redirect('signup')
+    return redirect('login/')
