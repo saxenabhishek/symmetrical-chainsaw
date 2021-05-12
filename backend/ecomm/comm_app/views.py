@@ -1,12 +1,13 @@
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
 from rest_framework import generics, status
 from .serialize import UserSerialize, CreateUser, AuthUser
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -19,7 +20,7 @@ class UserView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerialize
 
-
+    
 class CreateUserView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     serializer_class = CreateUser
