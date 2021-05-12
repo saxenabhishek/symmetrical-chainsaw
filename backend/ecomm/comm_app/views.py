@@ -1,11 +1,12 @@
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-# from .decorators import check_perms
+from .decorators import check_perms
 from rest_framework import generics, status
 from .serialize import UserSerialize, CreateUser, AuthUser
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from django.shortcuts import HttpResponse
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -43,10 +44,6 @@ class CreateUserView(APIView):
 
     def get(self):
         return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-def get():
-    return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class LoginUser(APIView):

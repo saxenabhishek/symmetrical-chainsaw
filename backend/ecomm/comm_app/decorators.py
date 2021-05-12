@@ -1,21 +1,14 @@
-from django.shortcuts import redirect, resolve_url
-
-
-def auth_redirect(view_func):
-    def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated:
-            redirect(resolve_url('products'))
-        return view_func(request, *args, **kwargs)
-
-    return wrapper
+# from rest_framework.response import Response
+# from rest_framework import status
+from django.shortcuts import HttpResponse
 
 
 def check_perms(view_func):
     def wrapper(request, *args, **kwargs):
         if request.user.is_authenticated:
-            pass
+            print(request.user)
         else:
-            return redirect(resolve_url('login'))
+            return HttpResponse("NO AUTH")
         return view_func(request, *args, **kwargs)
 
     return wrapper
