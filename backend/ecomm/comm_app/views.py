@@ -1,49 +1,56 @@
-from django.shortcuts import redirect, resolve_url
-from django.shortcuts import HttpResponse
-from django.contrib.auth import login, logout, authenticate
+from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .decorators import auth_redirect
-from django.contrib.auth.decorators import login_required
-from .decorators import check_perms
+from django.contrib.auth import authenticate, login, logout
+# from .decorators import check_perms
+from rest_framework import generics, status
+from .serialize import UserSerialize, CreateUser, AuthUser
+from rest_framework.views import APIView
 
 
-@check_perms
-def products(request):
-    return HttpResponse('Products')
+class UserView(generics.ListAPIView):
+
+    queryset = User.objects.all()
+    serializer_class = UserSerialize
 
 
-@auth_redirect
-def signup(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        email = request.POST['email']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
+class CreateUserView(APIView):
 
-        user = User.objects.create_user(username, email, password1, password2)
-        user.save()
-        return redirect(resolve_url('login'))
-    return HttpResponse('404 - Not Found')
+    serializer_class = CreateUser
 
+    def post(self, request):
+        if not request.session.exists(request.session.session_key):
+            request.session.create()
 
-@auth_redirect
-def loginuser(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
+        serializer = self.serializer_class(data=request.data)
 
-        user = authenticate(username=username, password=password)
+        if serializer.is_valid():
+            username = request.data.get('username')
+            email = request.data.get('email')
+            password = request.data.get('password')
 
-        if user is not None:
-            login(request, user)
-            return redirect(resolve_url('products'))
+            User.objects.create_user(email=email, username=username,
+                                     password=password)
 
-        return HttpResponse('Invalid credentials')
+            return Response(status=status.HTTP_201_CREATED)
 
-    return HttpResponse('404-Page Not Found')
+        return Response(data='Username', status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self):
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@login_required(login_url="login/")
-def logoutuser(request):
-    logout(request)
-    return redirect('signup')
+class LoginUser(APIView):
+
+    serializer_class = AuthUser
+
+    def post(self, request):
+        if not request.session.exists(request.session.session_key):
+            request.session.create()
+
+        verify = authenticate(username=request.data.get('username'),
+                              password=request.data.get('password'))
+        if verify:
+            login(request, verify)
+            return Response(UserSerialize(verify).data, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
