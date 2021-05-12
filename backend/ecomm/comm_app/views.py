@@ -1,12 +1,12 @@
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from .decorators import check_perms
 from rest_framework import generics, status
 from .serialize import UserSerialize, CreateUser, AuthUser
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from django.shortcuts import HttpResponse
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -60,7 +60,18 @@ class LoginUser(APIView):
         verify = authenticate(username=request.data.get('username'),
                               password=request.data.get('password'))
         if verify:
-            login(request, verify)
-            return Response(UserSerialize(verify).data, status=status.HTTP_200_OK)
+            token = RefreshToken.for_user(verify)
+
+            return Response({'user_id': verify.id,
+                             'username': verify.username,
+                             'access_token': str(token.access_token)}, status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class TestJWT(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        return Response({"access": "granted",
+                         'user': str(request.user)})
