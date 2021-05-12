@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'comm_app.apps.CommAppConfig',
+    'rest_framework',
 
 ]
 
@@ -67,6 +68,16 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+
+}
+
 
 WSGI_APPLICATION = 'ecomm.wsgi.application'
 

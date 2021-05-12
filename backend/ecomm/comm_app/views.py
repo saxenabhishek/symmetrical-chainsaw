@@ -1,46 +1,78 @@
-from django.shortcuts import redirect, resolve_url
-from django.shortcuts import HttpResponse
-from django.contrib.auth import login, logout, authenticate
+from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .decorators import auth_redirect, check_perms
+from django.contrib.auth import authenticate
+from rest_framework import generics, status
+from .serialize import UserSerialize, CreateUser, AuthUser
+from rest_framework.views import APIView
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
-@check_perms
-def products(request):
-    return HttpResponse('Products')
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return None
 
 
-@auth_redirect
-def signup(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        email = request.POST['email']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        if password1 == password2:
-            User.objects.create_user(username=username, password=password1, email=email)
-        return redirect(resolve_url('login'))
-    return HttpResponse('404 - Not Found')
+class UserView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerialize
+
+    
+class CreateUserView(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    serializer_class = CreateUser
+
+    def post(self, request):
+        if not request.session.exists(request.session.session_key):
+            request.session.create()
+
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            username = request.data.get('username')
+            email = request.data.get('email')
+            password = request.data.get('password')
+
+            User.objects.create_user(email=email, username=username,
+                                     password=password)
+
+            return Response(status=status.HTTP_201_CREATED)
+
+        return Response(data='Username', status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self):
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@auth_redirect
-def loginuser(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
+class LoginUser(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    serializer_class = AuthUser
 
-        user = authenticate(username=username, password=password)
+    def get(self, request):
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if user is not None:
-            login(request, user)
-            return redirect(resolve_url('products'))
+    def post(self, request):
+        if not request.session.exists(request.session.session_key):
+            request.session.create()
 
-        return HttpResponse('Invalid credentials')
+        verify = authenticate(username=request.data.get('username'),
+                              password=request.data.get('password'))
+        if verify:
+            token = RefreshToken.for_user(verify)
 
-    return HttpResponse('404-Page Not Found')
+            return Response({'user_id': verify.id,
+                             'username': verify.username,
+                             'access_token': str(token.access_token)}, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@check_perms
-def logoutuser(request):
-    logout(request)
-    return redirect('login/')
+class TestJWT(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        return Response({"access": "granted",
+                         'user': str(request.user)})
