@@ -5,16 +5,22 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework import generics, status
 from .serialize import UserSerialize, CreateUser, AuthUser
 from rest_framework.views import APIView
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return None
 
 
 class UserView(generics.ListAPIView):
-
     queryset = User.objects.all()
     serializer_class = UserSerialize
 
 
 class CreateUserView(APIView):
-
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     serializer_class = CreateUser
 
     def post(self, request):
@@ -39,9 +45,16 @@ class CreateUserView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class LoginUser(APIView):
+def get():
+    return Response(status=status.HTTP_404_NOT_FOUND)
 
+
+class LoginUser(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     serializer_class = AuthUser
+
+    def get(self, request):
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
         if not request.session.exists(request.session.session_key):
