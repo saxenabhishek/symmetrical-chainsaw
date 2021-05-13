@@ -31,17 +31,20 @@ class CreateUserView(APIView):
 
         serializer = self.serializer_class(data=request.data)
 
-        if serializer.is_valid():
-            username = request.data.get('username')
-            email = request.data.get('email')
-            password = request.data.get('password')
+        
+        username = request.data.get('username')
+        email = request.data.get('email')
+        password = request.data.get('password')
 
+        try:
             User.objects.create_user(email=email, username=username,
                                      password=password)
 
             return Response(status=status.HTTP_201_CREATED)
 
-        return Response(data='Username', status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            return Response(data='Username', status=status.HTTP_400_BAD_REQUEST)
 
     def get(self):
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -58,9 +61,10 @@ class LoginUser(APIView):
         if not request.session.exists(request.session.session_key):
             request.session.create()
 
-        verify = authenticate(username=request.data.get('username'),
-                              password=request.data.get('password'))
-        if verify:
+        
+        if verify :=  authenticate(username=request.data.get('username'),
+                              password=request.data.get('password')):
+
             token = RefreshToken.for_user(verify)
 
             return Response({'user_id': verify.id,
