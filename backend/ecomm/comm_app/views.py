@@ -11,12 +11,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
-
     def enforce_csrf(self, request):
         return None
 
 
 class UserView(generics.ListAPIView):
+
+    permission_classes = [IsAuthenticated]
+
     queryset = User.objects.all()
     serializer_class = UserSerialize
 
@@ -80,3 +82,6 @@ class TestJWT(APIView):
     def post(self, request):
         return Response({"access": "granted",
                          'user': str(request.user)})
+    
+    def get(self, request):
+        pass
