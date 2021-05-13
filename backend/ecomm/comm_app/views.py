@@ -1,77 +1,124 @@
-from rest_framework.response import Response
+from django.contrib.auth import REDIRECT_FIELD_NAME, authenticate
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
 from rest_framework import status
-from .serialize import CreateUser, AuthUser
-from rest_framework.views import APIView
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework import authentication
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication)
+
+
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.decorators import api_view, permission_classes
+
+from .serializer import CreateUserSerializer, AuthUserSerializer
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
+    """
+    Disables all CSRF verification.
+
+    """
+
     def enforce_csrf(self, request):
         return None
 
-        
-    
+
 class CreateUserView(APIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
-    serializer_class = CreateUser
+    """
+
+    API for all User Creation.
+
+    """
+
+    authentication_classes = (CsrfExemptSessionAuthentication,
+                              BasicAuthentication)
+
+    serializer_class = CreateUserSerializer
 
     def post(self, request):
+        """
+        Args:
+            request
+
+        Returns:
+            Respones -> HTTP_201_CREATED on user registeration,
+            Response -> HTTP_400_BAD_REQUEST on registration error 
+
+        """
+
         if not request.session.exists(request.session.session_key):
             request.session.create()
-        
+
         username = request.data.get('username')
         email = request.data.get('email')
         password = request.data.get('password')
 
-        try:
+        serial_data = self.serializer_class(data=request.data)
+
+        if serial_data.is_valid():
             User.objects.create_user(username=email, first_name=username,
                                      password=password)
 
             params = {
-                "user": "created"
+                "User": "Created"
             }
+
             return Response(params, status=status.HTTP_201_CREATED)
 
-        except Exception as e:
-            print(e)
-            return Response(data='Username', status=status.HTTP_400_BAD_REQUEST)
+        params = {
+            "ERROR": "User Not Created"
+        }
+
+        return Response(params, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def FlushDB(request, *args, **kwargs):
-    if user := User.objects.filter(username=request.data.get('email'))[0]:
-        if authenticate(username=user, password=request.data.get('password')):
-            user.delete()
+class RemoveUser(APIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = AuthUserSerializer
+
+    def delete(self, request):
+        if not self.request.session.exists(self.request.session.keys):
+            self.request.session.create()
+
+        serial_data = self.serializer_class(data=request.data)
+
+        if serial_data.is_valid():
+            email = request.data.get('email')
+            password = request.data.get('password')
+
+            if user := authenticate(username=email, password=password):
+                print(user)
+                user.delete()
+
+                params = {
+                    str(request.user): "Deleted"
+                }
+
+                return Response(params, status=status.HTTP_200_OK)
+
             params = {
-                "deleted" : str(request.user)
+                "Invalid Credentials": "Failed"
             }
-            return Response(params, status=status.HTTP_200_OK)
+            return Response(params, status=status.HTTP_400_BAD_REQUEST)
 
         params = {
-            "Auth status": "Failed"
+            "ERROR": "USER NOT FOUND"
         }
-        return Response(params, status=status.HTTP_400_BAD_REQUEST)
 
-    params = {
-        "User Not Found" : "None"
-    }
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    return Response(params, status=status.HTTP_400_BAD_REQUEST)
-
-    
 
 class LoginUser(APIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
-    serializer_class = AuthUser
+
+    authentication_classes = (CsrfExemptSessionAuthentication,
+                              BasicAuthentication)
+
+    serializer_class = AuthUserSerializer
 
     def get(self, request):
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -80,28 +127,37 @@ class LoginUser(APIView):
         if not request.session.exists(request.session.session_key):
             request.session.create()
 
-        if verify :=  authenticate(username=request.data.get('email'),
-                              password=request.data.get('password')):
+        serial_data = self.serializer_class(data=request.data)
 
-            token = RefreshToken.for_user(verify)
+        if serial_data.is_valid():
+            if verify := authenticate(username=request.data.get('email'),
+                                      password=request.data.get('password')):
 
-            return Response({'user_id': verify.id,
-                             'email': verify.username,
-                             'access_token': str(token.access_token)}, status=status.HTTP_200_OK)
+                token = RefreshToken.for_user(verify)
 
-        params = { 
-            "Invalid Credentials" : None
+                return Response({'user_id': verify.id,
+                                 'email': verify.username,
+                                 'access_token': str(token.access_token)}, status=status.HTTP_200_OK)
+
+            params = {
+                "Invalid Credentials": None
+            }
+
+            return Response(params, status=status.HTTP_400_BAD_REQUEST)
+
+        params = {
+            "ERROR": "INVALID DATA"
         }
 
         return Response(params, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TestJWT(APIView):
+class Products(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         return Response({"access": "granted",
                          'user': str(request.user)})
-    
+
     def get(self, request):
         pass
