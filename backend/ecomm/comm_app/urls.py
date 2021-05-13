@@ -8,5 +8,6 @@ urlpatterns = [
     path('login', views.LoginUser().as_view(), name="login_view"),
     path('logged', views.TestJWT().as_view(), name="testing"),
     path('verify/token', TokenVerifyView.as_view(), name="verify_view"),
-
+    path('flush_db', views.FlushDB, name="flush_db"),
+    
 ]
