@@ -92,7 +92,7 @@ class RemoveUser(APIView):
             password = request.data.get('password')
 
             if user := authenticate(username=email, password=password):
-                print(user)
+
                 user.delete()
 
                 params = {

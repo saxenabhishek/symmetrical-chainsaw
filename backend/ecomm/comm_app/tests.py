@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
+import requests
 
 
 class Register(APITestCase):
@@ -105,3 +106,34 @@ class Permsissions(APITestCase):
             "/apis/flush", content_type="application/json", data=data)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+
+class TestAuth(APITestCase):
+    
+    def setUp(self):
+        
+        data = {"username": "testuser",
+                "email": "testuser@localhost",
+                "password": "testpassword"}
+
+        requests.post("http://localhost:8000/apis/register", data=data)
+
+        self.res = requests.post("http://localhost:8000/apis/login", data=data)
+
+    
+    def test_auth_flush(self):
+
+        access_token = self.res.json()['access_token']
+        header = {
+            "Authorization": f"Bearer {access_token}"
+        }
+
+        data = {"email": "testuser@localhost",
+                "password": "testpassword"}
+
+        url = "http://localhost:8000/apis/flush"
+        res = requests.delete(url=url, data=data, headers=header)
+
+        self.assertEqual(res.status_code, 200)
+        
