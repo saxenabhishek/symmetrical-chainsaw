@@ -96,15 +96,12 @@ class Permsissions(APITestCase):
         res = self.client.post("/apis/verify/token", data=params)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-    def test_remove_user(self):
+    def test_remove_unauth(self):
         
         data = {"email": "testuser@localhost",
                 "password": "testpassword"}
 
-        token = str(self.access_token)
-
-        header = {"Authorization": f"Bearer {token}"}
         response = self.client.delete(
-            "/apis/flush", content_type="application/json", **header)
+            "/apis/flush", content_type="application/json", data=data)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
