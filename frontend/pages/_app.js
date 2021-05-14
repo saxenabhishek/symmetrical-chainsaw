@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import Header from "../components/Header";
-import Tokenprovider from "../components/Context/Auth";
+import { Tokenprovider } from "../components/Context/Auth";
 
 function MyApp({ Component, pageProps }) {
   return (
