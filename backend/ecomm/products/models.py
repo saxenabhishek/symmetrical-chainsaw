@@ -9,5 +9,5 @@ class Products_Model(models.Model):
     name = models.TextField(null=False, blank=False)
     stars = models.CharField(max_length=50, blank=False)
     revs = models.CharField(max_length=10, blank=False)
-    price = models.IntegerField(blank=False)
+    price = models.CharField(max_length=10, blank=False)
     og_price = models.CharField(max_length=10, blank=False)
