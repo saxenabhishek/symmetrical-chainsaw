@@ -1,10 +1,14 @@
+import Link from "next/link";
+
 export default function Header(prop) {
   return (
     <header className="text-gray-400 bg-gray-900 body-font">
       <div className="container mx-auto flex p-5 flex-row justify-between">
-        <a className="title-font font-medium items-center text-white mb-0">
-          <span className="md:ml-3  text-xl">Ecomm</span>
-        </a>
+        <Link href="/">
+          <a className="title-font font-medium items-center text-white mb-0">
+            <span className="md:ml-3  text-xl">Ecomm</span>
+          </a>
+        </Link>
         <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-700	flex-col md:flex-row items-center hidden md:block text-base justify-self-center">
           <a className="mr-5 hover:text-white">First Link</a>
           <a className="mr-5 hover:text-white">Second Link</a>
