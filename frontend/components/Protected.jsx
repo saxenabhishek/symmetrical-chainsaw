@@ -5,11 +5,20 @@ import { tokencontext } from "../components/Context/Auth";
 export default function Protected(props) {
   const tokwnCont = useContext(tokencontext);
   if (typeof window !== "undefined") {
-    if (tokwnCont.token == null) {
-      Router.replace("/auth");
+    console.log(tokwnCont.token, tokwnCont.token === null);
+    if (tokwnCont.token === null) {
+      console.log("redirecting");
+      Router.replace("/signin");
       return null;
     }
     return props.children;
   }
   return null;
+}
+
+export async function getStaticProps() {
+  const tokwnCont = useContext(tokencontext);
+  const tokenString = sessionStorage.getItem("token");
+  const userToken = JSON.parse(tokenString);
+  tokwnCont.setToken(userToken);
 }
