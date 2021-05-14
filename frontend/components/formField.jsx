@@ -8,7 +8,7 @@ export default function FormField(props) {
         type={props.type}
         name={props.name}
       />{" "}
-      <ErrorMessage name="username" component="div" />
+      <ErrorMessage name={props.name} component="div" />
     </div>
   );
 }
