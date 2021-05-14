@@ -1,15 +1,14 @@
-from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from .models import Products_Model
+from .pagination import CustomPagination
+from .serializer import ProductSerializer
 
 
-class Products(APIView):
+class Products(ListAPIView):
+    
+    queryset = Products_Model.objects.all()
     permission_classes = [IsAuthenticated]
+    serializer_class = ProductSerializer
 
-    def post(self, request):
-        return Response({"access": "granted",
-                         'user': str(request.user)})
-
-    def get(self, request):
-        pass
-
+    pagination_class = CustomPagination
