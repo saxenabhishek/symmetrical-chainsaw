@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import Link from "next/link";
+import FormField from "../components/formField";
+import { useContext } from "react";
+import { tokencontext } from "../components/Context/Auth";
+import Router from "next/router";
 
 export default function Auth(props) {
+  let t = useContext(tokencontext);
   return (
     <section className="text-gray-400 bg-gray-900 body-font h-full md:h-screen">
       <div className="container px-5 py-24 mx-auto max-w-5xl flex flex-wrap items-center">
@@ -15,59 +19,59 @@ export default function Auth(props) {
           </p>
         </div>
         <Formik
-          initialValues={{ username: "", password: "" }}
+          initialValues={{ email: "", password: "" }}
           validate={(values) => {
             const errors = {};
-            if (!values.username) {
-              errors.username = "Required";
-            } else if (
+            if (
               !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
             ) {
-              errors.username = "Invalid email address";
+              errors.email = "Invalid email address";
             }
+            console.log(errors);
             return errors;
           }}
           onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
+            console.log("bs");
+            let x = {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(values),
+            };
+            console.log(x);
+            fetch("http://localhost:8000/apis/login", x)
+              .then((res) => {
+                if (res.status == 200) {
+                  // settext("User account found");
+                  console.log("Created :)))))");
+                  res.json().then((data) => {
+                    t.setToken(data.access_token);
+                    console.log(data);
+                    Router.replace("/prd");
+                  });
+                } else {
+                  // settext("Sorry try again :p");
+                  console.log("dkjfjnsd");
+                  // Router.replace("/signin");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           }}
         >
-          {({ isSubmitting }) => (
-            <Form className="lg:w-2/6 md:w-1/2 bg-gray-800 bg-opacity-50 rounded-lg ring ring-indigo-400 p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
-              <div className="relative mb-4">
-                <label
-                  htmlFor="full-name"
-                  className="leading-7 text-sm text-gray-400"
-                >
-                  Username
-                </label>
-                <Field
-                  className="w-full bg-gray-600 bg-opacity-20 focus:bg-transparent focus:ring-2 focus:ring-indigo-900 rounded border border-gray-600 focus:border-indigo-500 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                  type="email"
-                  name="username"
-                />
-                <ErrorMessage name="username" component="div" />
-              </div>
-              <div className="relative mb-4">
-                <label
-                  htmlFor="email"
-                  className="leading-7 text-sm text-gray-400"
-                >
-                  Password
-                </label>
-                <Field
-                  className="w-full bg-gray-600 bg-opacity-20 focus:bg-transparent focus:ring-2 focus:ring-indigo-900 rounded border border-gray-600 focus:border-indigo-500 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                  type="password"
-                  name="password"
-                />
-                <ErrorMessage name="password" component="div" />
-              </div>
+          {(props) => (
+            <Form
+              // onSubmit={() => console.log("trying to submit")}
+              className="lg:w-2/6 md:w-1/2 bg-gray-800 bg-opacity-50 rounded-lg ring ring-indigo-400 p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0"
+            >
+              <FormField name="email" type="email" />
+              <FormField name="password" type="password" />
               <button
                 className=" text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
                 type="submit"
-                disabled={isSubmitting}
+                disabled={props.isSubmitting}
               >
                 Sign in
               </button>
