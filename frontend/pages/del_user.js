@@ -4,11 +4,11 @@ import Link from "next/link";
 import Router from "next/router";
 import FormField from "../components/formField";
 import { useContext } from "react";
-import { tokencontext } from "../components/Context/Auth";
+import { useAuth } from "../components/Context/Auth";
 
 export default function signin() {
   let [text, settext] = useState("");
-  let t = useContext(tokencontext);
+  let t = useAuth();
   return (
     <section className="text-gray-400 bg-gray-900 body-font h-full md:h-screen">
       <div className="container px-5 py-24 mx-auto items-center">
@@ -25,29 +25,15 @@ export default function signin() {
           }}
           onSubmit={(values, { setSubmitting }) => {
             settext("Sending...");
-            let x = {
-              method: "POST",
-              headers: {
-                Authorization: "Bearer " + t.token,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(values),
-            };
-            console.log(x);
-            fetch("http://localhost:8000/apis/flush_db", x)
-              .then((res) => {
-                if (res.status == 201) {
-                  settext("User account deleted");
-                  console.log("Del done");
-                  Router.replace("/");
-                } else {
-                  settext("Sorry try again :p");
-                  Router.replace("/del_user");
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            let status = t.deluser(values);
+            if (status == 200) {
+              settext("User account deleted");
+              console.log("Del done");
+              Router.replace("/");
+            } else {
+              settext("Sorry try again :p");
+              Router.replace("/del_user");
+            }
           }}
         >
           {({ isSubmitting }) => (
