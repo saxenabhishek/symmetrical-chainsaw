@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'comm_app.apps.CommAppConfig',
     'rest_framework',
     'corsheaders',
+    "products.apps.ProductsConfig",
+
 
 ]
 

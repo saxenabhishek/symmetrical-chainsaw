@@ -107,4 +107,4 @@ class Permsissions(APITestCase):
         response = self.client.delete(
             "/apis/flush", content_type="application/json", **header)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
