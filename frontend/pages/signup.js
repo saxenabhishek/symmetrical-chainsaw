@@ -3,9 +3,11 @@ import { Formik, Form } from "formik";
 import Link from "next/link";
 import Router from "next/router";
 import FormField from "../components/formField";
+import { useAuth } from "../components/Context/Auth";
 
 export default function signin() {
   let [text, settext] = useState("");
+  let t = useAuth();
   return (
     <section className="text-gray-400 bg-gray-900 body-font h-full md:h-screen">
       <div className="container px-5 py-24 mx-auto items-center">
@@ -27,28 +29,16 @@ export default function signin() {
           }}
           onSubmit={(values, { setSubmitting }) => {
             settext("Sending...");
-            let x = {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(values),
-            };
-            console.log(x);
-            fetch("http://localhost:8000/apis/register", x)
-              .then((res) => {
-                if (res.status == 201) {
-                  settext("User account registered");
-                  console.log("Created :)))))");
-                  Router.replace("/sign");
-                } else {
-                  settext("Sorry try again :p");
-                  Router.replace("/signup");
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            t.signup(values).then((status) => {
+              console.log(status);
+              if (status == 201) {
+                settext("User account registered");
+                Router.replace("/signin");
+              } else {
+                settext("Sorry try again :p");
+                Router.replace("/signup");
+              }
+            });
           }}
         >
           {({ isSubmitting }) => (

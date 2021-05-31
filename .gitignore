@@ -167,3 +167,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+out.jl
+
+*.sqlite3

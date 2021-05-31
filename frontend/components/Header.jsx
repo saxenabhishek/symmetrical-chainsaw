@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { useAuth } from "../components/Context/Auth";
 
 export default function Header(prop) {
+  const t = useAuth();
   return (
     <header className="text-gray-400 bg-gray-900 body-font">
       <div className="container mx-auto flex p-5 flex-row justify-between">
@@ -10,13 +12,22 @@ export default function Header(prop) {
           </a>
         </Link>
         <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-700	flex-col md:flex-row items-center hidden md:block text-base justify-self-center">
-          <a className="mr-5 hover:text-white">First Link</a>
-          <a className="mr-5 hover:text-white">Second Link</a>
-          <a className="mr-5 hover:text-white">Third Link</a>
-          <a className="mr-5 hover:text-white">Fourth Link</a>
+          <span className="mr-5 hover:text-white">
+            <Link href="/prd">Products</Link>
+          </span>
+          <span className="mr-5 hover:text-white">
+            <Link href="/">Dashboard</Link>
+          </span>
+          <span className="mr-5 hover:text-white">
+            <Link href="/del_user">Remove Account </Link>
+          </span>
         </nav>
-        <button className="inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:bg-gray-500 hover:text-gray-50 rounded mt-0">
-          Sign in
+        {t.isAuthenticated && <p className="mx-5">Cart: {}</p>}
+        <button
+          onClick={t.logout}
+          className="inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:bg-gray-500 hover:text-gray-50 rounded mt-0"
+        >
+          Sign out
           <svg
             fill="none"
             stroke="currentColor"

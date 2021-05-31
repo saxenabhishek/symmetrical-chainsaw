@@ -1,24 +1,19 @@
+import Loader from "../components/loader";
+import { useAuth } from "../components/Context/Auth";
 import Router from "next/router";
-import { useContext } from "react";
-import { tokencontext } from "../components/Context/Auth";
+import { route } from "next/dist/next-server/server/router";
 
 export default function Protected(props) {
-  const tokwnCont = useContext(tokencontext);
-  if (typeof window !== "undefined") {
-    console.log(tokwnCont.token, tokwnCont.token === null);
-    if (tokwnCont.token === null) {
-      console.log("redirecting");
-      Router.replace("/signin");
-      return null;
-    }
-    return props.children;
+  const t = useAuth();
+  console.log(!t.loading, !t.isAuthenticated);
+  if (t.loading) {
+    return <Loader />;
   }
-  return null;
-}
-
-export async function getStaticProps() {
-  const tokwnCont = useContext(tokencontext);
-  const tokenString = sessionStorage.getItem("token");
-  const userToken = JSON.parse(tokenString);
-  tokwnCont.setToken(userToken);
+  if (t.isAuthenticated) {
+    return props.children;
+  } else {
+    Router.replace("/signin");
+    return null;
+    // window.location.pathname = "/signin";
+  }
 }
