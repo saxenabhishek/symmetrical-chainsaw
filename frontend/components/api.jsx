@@ -4,10 +4,10 @@ import Axios from "axios";
 let urls = {
   test: `http://localhost:8000`,
   development: "http://localhost:8000/",
-  production: "",
+  production: "http://ecomm.pythonanywhere.com/",
 };
 const api = Axios.create({
-  baseURL: urls["test"],
+  baseURL: urls["production"],
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
