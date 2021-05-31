@@ -137,6 +137,7 @@ class LoginUser(APIView):
 
                 return Response({'user_id': verify.id,
                                  'email': verify.username,
+                                 'username': verify.first_name,
                                  'access_token': str(token.access_token)}, status=status.HTTP_200_OK)
 
             params = {
