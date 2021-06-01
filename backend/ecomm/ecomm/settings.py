@@ -20,7 +20,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ows-@i6zk0)l%087(j$$wzcmmz&2z&%a_yru5x#x^d*#)#k=9r'
+SECRET_KEY = ""
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,8 +40,8 @@ INSTALLED_APPS = [
     'comm_app.apps.CommAppConfig',
     'rest_framework',
     'corsheaders',
-    "products.apps.ProductsConfig",
-
+    'products.apps.ProductsConfig',
+    'drf_yasg',
 
 ]
 
