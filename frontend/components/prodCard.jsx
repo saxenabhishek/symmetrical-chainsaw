@@ -32,8 +32,6 @@ export default function Card({ alt, src, title, subtitle, price, p }) {
             alt={smart[0]}
             className="object-contain object-center md:object-scale-down  w-full h-full block"
             src={p.img_src}
-            //   height={421}
-            //   width={262}
             layout="fill"
           />
         </a>
@@ -47,12 +45,13 @@ export default function Card({ alt, src, title, subtitle, price, p }) {
           <p className="mt-1 text-green-400">Price: ₹{p.price}</p>
         </div>
       </div>
+
       <div
         onClick={() => {
           console.log("click");
           if (taken) {
-            setTaken(false);
             cart.removeItem(p);
+            setTaken(false);
           } else {
             setTaken(true);
 
@@ -62,7 +61,7 @@ export default function Card({ alt, src, title, subtitle, price, p }) {
         }}
         className={
           (taken
-            ? "bg-red-800 hover:bg-red-400"
+            ? "bg-indigo-800 hover:bg-indigo-400"
             : "bg-green-400 hover:bg-green-800") +
           " " +
           "font-semibold w-full font-sans text-center px-2 py-3 text-white rounded-xl rounded-t-none"
