@@ -42,25 +42,32 @@ export default function signin() {
           }}
         >
           {({ isSubmitting }) => (
-            //   username
-            <Form className="max-w-lg bg-gray-800 bg-opacity-50 rounded-lg ring ring-indigo-400 p-8 flex flex-col mx-auto w-full mt-10 md:mt-0">
-              {text && <p className="text-indigo-500">{text}</p>}
-              <FormField name="username" type="name" />
-              <FormField name="password" type="password" />
-              <FormField name="email" type="email" />
-              <button
-                className=" text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-                type="submit"
-                disabled={isSubmitting}
-              >
-                Sign in
-              </button>
-              <Link href="/signin">
-                <p className="text-xs mt-3 text-white">
-                  Already have a account?
-                </p>
-              </Link>
-            </Form>
+            <>
+              <h1 className="title-font font-medium text-3xl text-white">
+                We need your details to create an account
+              </h1>
+              <p className="leading-relaxed mt-4 italic">
+                it's really simple :))
+              </p>
+              <Form className="max-w-lg bg-gray-800 bg-opacity-50 rounded-lg ring ring-indigo-400 p-8 flex flex-col mx-auto w-full mt-10 md:mt-0">
+                {text && <p className="text-indigo-500">{text}</p>}
+                <FormField name="username" type="name" />
+                <FormField name="password" type="password" />
+                <FormField name="email" type="email" />
+                <button
+                  className=" text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  Sign in
+                </button>
+                <Link href="/signin">
+                  <p className="text-xs mt-3 text-white">
+                    Already have a account?
+                  </p>
+                </Link>
+              </Form>
+            </>
           )}
         </Formik>
       </div>

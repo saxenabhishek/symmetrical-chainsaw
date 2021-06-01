@@ -12,6 +12,9 @@ export default function signin() {
   return (
     <section className="text-gray-400 bg-gray-900 body-font h-full md:h-screen">
       <div className="container px-5 py-24 mx-auto items-center">
+        <h1 className="text-2xl font-bold">Remove user account</h1>
+        <p>Enter your details to confirm</p>
+        <br />
         <Formik
           initialValues={{ email: "", password: "" }}
           validate={(values) => {
