@@ -4,7 +4,7 @@ import Axios from "axios";
 let urls = {
   test: `http://localhost:8000`,
   development: "http://localhost:8000/",
-  production: "http://ecomm.pythonanywhere.com/",
+  production: "https://ecomm.pythonanywhere.com/",
 };
 const api = Axios.create({
   baseURL: urls["production"],
