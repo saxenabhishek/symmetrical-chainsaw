@@ -22,11 +22,12 @@ export const Cartprovider = (props) => {
   };
 
   const removeItem = async (item) => {
-    setCart(cart.filter((p) => p != item));
     console.log(cart.length);
-    if (cart.length === 0) {
+    if (cart.length == 1) {
+      setCart([]);
       Cookies.remove("cart");
     } else {
+      setCart(cart.filter((p) => p.img_src != item.img_src));
       Cookies.set("cart", cart, { expires: 60 });
     }
   };
