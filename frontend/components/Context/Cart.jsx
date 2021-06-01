@@ -16,12 +16,12 @@ export const Cartprovider = (props) => {
     }
   }, []);
 
-  const addItem = (item) => {
+  const addItem = async (item) => {
     setCart(cart.concat(item));
     Cookies.set("cart", cart, { expires: 60 });
   };
 
-  const removeItem = (item) => {
+  const removeItem = async (item) => {
     setCart(cart.filter((p) => p != item));
     console.log(cart.length);
     if (cart.length === 0) {
