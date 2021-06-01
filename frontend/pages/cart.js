@@ -47,6 +47,9 @@ export default function cart(props) {
   return (
     <Protected>
       <section className="containter p-5 text-gray-400 bg-gray-900 body-font min-h-screen">
+        <h1 className="font-semibold text-5xl text-white m-8 mx-auto">
+          Your Cart
+        </h1>
         {c.cart.length == 0 ? (
           <div className="px-4 text mx-auto text-center">
             <Image src="/box.svg" height="400" width="600"></Image>
@@ -72,6 +75,9 @@ export default function cart(props) {
               <p className="font-semibold float-left">Grand Total:</p>
               <p>₹ {(cost + cost * 0.18).toFixed(2)}</p>
             </div>
+            <button className="bg-green-400 text-white py-5 font-semibold text-2xl rounded-md shadow-lg">
+              Proceed to checkout
+            </button>
           </div>
         )}
       </section>
