@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Home(props) {
   return (
-    <section className="text-gray-400 bg-gray-900 body-font h-full">
+    <section className="text-gray-400 bg-gray-900 body-font h-screen mg:h-full">
       <div className="container mx-auto flex px-5 py-24 items-center justify-center flex-col">
         <Image
           className="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded"
