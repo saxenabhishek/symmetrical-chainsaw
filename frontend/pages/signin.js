@@ -13,11 +13,9 @@ export default function Auth(props) {
       <div className="container px-5 py-24 mx-auto max-w-5xl flex flex-wrap items-center">
         <div className="lg:w-3/5 md:w-1/2 md:pr-16 lg:pr-0 pr-0">
           <h1 className="title-font font-medium text-3xl text-white">
-            Some smart sounding long lines of bs.
+            Sign in to reach our products
           </h1>
-          <p className="leading-relaxed mt-4">
-            More bs to support the bs above
-          </p>
+          <p className="leading-relaxed mt-4 italic">it's really simple :))</p>
         </div>
         <Formik
           initialValues={{ email: "", password: "" }}
