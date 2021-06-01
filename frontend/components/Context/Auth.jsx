@@ -7,7 +7,7 @@ const tokencontext = createContext();
 export const useAuth = () => useContext(tokencontext);
 
 export const Tokenprovider = (props) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
 
   const parseJwt = (token) => {
@@ -30,18 +30,26 @@ export const Tokenprovider = (props) => {
       const cookie = Cookies.get("token");
       if (cookie) {
         const token = JSON.parse(cookie);
-        console.log("Got a token in the cookies, let's see if it is valid");
+        console.log("Got a token");
         api.defaults.headers.Authorization = `Bearer ${token.access_token}`;
-        const data = parseJwt(token.access_token);
-        console.log(data);
+        try {
+          const { data, status } = await api.post("apis/verify/token", {
+            token: token.access_token,
+          });
+          setUser(token.username);
+        } catch (error) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+          logout();
+        }
+
         // const { data: user } = await api.post("apis/verify/token",);
-        setUser(data.user_id);
       }
       setLoading(false);
-      console.log(user);
     }
     loadUserFromCookies();
-  }, []);
+  });
 
   const deluser = async (values) => {
     try {
@@ -74,8 +82,6 @@ export const Tokenprovider = (props) => {
       console.log(error.response.headers);
       return error.response.status;
     }
-
-    return status;
   };
 
   const login = async (values) => {
@@ -85,8 +91,8 @@ export const Tokenprovider = (props) => {
         console.log("Got token", data);
         Cookies.set("token", data, { expires: 60 });
         api.defaults.headers.Authorization = `Bearer ${data.access_token}`;
-        setUser(data.user_id);
-        console.log("Got user", user);
+        setUser(data.username);
+        console.log("Got user", user, data.username);
       }
       return status;
     } catch (error) {
