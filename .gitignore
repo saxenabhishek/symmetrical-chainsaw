@@ -170,3 +170,5 @@ yarn-error.log*
 out.jl
 
 *.sqlite3
+
+frontend/package-lock.json

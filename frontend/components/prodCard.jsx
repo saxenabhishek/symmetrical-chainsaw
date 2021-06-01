@@ -48,13 +48,11 @@ export default function Card({ alt, src, title, subtitle, price, p }) {
 
       <div
         onClick={() => {
-          console.log("click");
           if (taken) {
             cart.removeItem(p);
             setTaken(false);
           } else {
             setTaken(true);
-
             cart.addItem(p);
           }
           console.log(taken);
