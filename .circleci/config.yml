@@ -12,11 +12,11 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            python3 -m venv CLIspotify
-            . CLIspotify/bin/activate
+            python3 -m venv Ecomm
+            . Ecomm/bin/activate
             pip install -r requirements.txt
       - run:
           name: run tests
           command: |
-            . CLIspotify/bin/activate
+            . Ecomm/bin/activate
             python server/manage.py test
