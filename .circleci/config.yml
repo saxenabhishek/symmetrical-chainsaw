@@ -19,4 +19,4 @@ jobs:
           name: run tests
           command: |
             . Ecomm/bin/activate
-            python config/manage.py test
+            python ecomm/manage.py test
