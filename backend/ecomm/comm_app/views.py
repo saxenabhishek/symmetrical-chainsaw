@@ -1,7 +1,6 @@
-from django.contrib.auth import REDIRECT_FIELD_NAME, authenticate
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework import authentication
 from rest_framework.authentication import (BasicAuthentication,
                                            SessionAuthentication)
 
