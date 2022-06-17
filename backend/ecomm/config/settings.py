@@ -11,16 +11,17 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-
+from dotenv import load_dotenv
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ""
+SECRET_KEY = os.getenv("SECRET")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -57,7 +58,7 @@ MIDDLEWARE = [
 
 ]
 
-ROOT_URLCONF = 'ecomm.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -87,7 +88,7 @@ REST_FRAMEWORK = {
 }
 
 
-WSGI_APPLICATION = 'ecomm.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
